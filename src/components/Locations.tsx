@@ -30,17 +30,20 @@ export function Locations({ onBack }: LocationsProps) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.05 }}
               onClick={() => setSelectedLoc(loc)}
-              className={`p-3 rounded-lg transition-all text-left ${
+              className={`relative p-4 rounded-xl transition-all text-left overflow-hidden ${
                 selectedLoc?.id === loc.id 
-                ? 'bg-blue-500/20 border border-blue-500/30' 
-                : 'bg-white/5 border border-white/5 hover:bg-white/10'
+                ? 'bg-gradient-to-br from-[#005baa]/20 to-transparent border border-blue-500/50 shadow-[0_0_15px_rgba(0,91,170,0.2)]' 
+                : 'bg-white/5 border border-white/10 hover:bg-white/10'
               }`}
             >
-              <h3 className={`text-[10px] font-bold font-display uppercase mb-1 ${selectedLoc?.id === loc.id ? 'text-blue-400' : 'text-slate-200'}`}>
+              {selectedLoc?.id === loc.id && (
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#005baa] to-[#ed1c24]"></div>
+              )}
+              <h3 className={`text-[11px] font-bold font-display uppercase mb-1.5 ${selectedLoc?.id === loc.id ? 'text-blue-400' : 'text-slate-200'}`}>
                 {loc.name}
               </h3>
-              <p className="text-[9px] text-slate-400 line-clamp-2 leading-relaxed flex items-start gap-1">
-                <MapPin className="w-3 h-3 shrink-0 mt-0.5 opacity-70" />
+              <p className="text-[10px] text-slate-400 line-clamp-2 leading-relaxed flex items-start gap-1.5">
+                <MapPin className="w-3.5 h-3.5 shrink-0 mt-0.5 opacity-70" />
                 {loc.address}
               </p>
             </motion.button>
@@ -85,7 +88,7 @@ export function Locations({ onBack }: LocationsProps) {
               <div className="flex-1 w-full relative bg-slate-900">
                 <iframe 
                   src={selectedLoc.iframeSrc}
-                  className="absolute inset-0 w-full h-full border-0 grayscale opacity-80 mix-blend-lighten"
+                  className="absolute inset-0 w-full h-full border-0 shadow-inner"
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
