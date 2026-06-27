@@ -10,11 +10,11 @@ interface GameProps {
 type GameState = 'START' | 'PLAYING' | 'GAME_OVER' | 'CLAIM' | 'SUCCESS';
 
 // Constants
-const GRAVITY = 0.5;
-const JUMP = -8;
+const GRAVITY = 0.3;
+const JUMP = -6;
 const PIPE_WIDTH = 60;
 const PIPE_GAP = 180;
-const PIPE_SPEED = 2.5;
+const PIPE_SPEED = 2.0;
 
 export function Game({ onBack }: GameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -105,52 +105,45 @@ export function Game({ onBack }: GameProps) {
       const rotation = Math.min(Math.PI / 4, Math.max(-Math.PI / 4, (velocity * 0.1)));
       ctx.rotate(rotation);
       
-      // Outline
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(0, 0, radius + 2, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.scale(2, 2); // scale up the pixel art
+      ctx.translate(-8.5, -6); // center it
 
-      // Body
-      ctx.fillStyle = '#f4b324';
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Wing
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.ellipse(-4, 2, 6, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.stroke();
+      const p = (color: string, rects: number[][]) => {
+        ctx.fillStyle = color;
+        rects.forEach(([px, py, pw, ph]) => ctx.fillRect(px, py, pw || 1, ph || 1));
+      };
 
-      // Beak
-      ctx.fillStyle = '#e23122';
-      ctx.beginPath();
-      ctx.moveTo(radius - 2, -3);
-      ctx.lineTo(radius + 8, 1);
-      ctx.lineTo(radius - 2, 5);
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.beginPath();
-      ctx.moveTo(radius - 2, 1);
-      ctx.lineTo(radius + 7, 1);
-      ctx.stroke();
-
-      // Eye
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(4, -4, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(6, -4, 2, 0, Math.PI * 2);
-      ctx.fill();
-
+      // Black outline
+      p('#543847', [
+        [6,0,6,1], [4,1,2,1], [12,1,2,1], [2,2,2,1], [14,2,1,1], [1,3,1,1], [15,3,1,2],
+        [0,4,1,3], [16,5,1,3], [1,7,1,1], [15,8,1,2], [2,8,1,1], [3,9,2,1], [13,10,2,1],
+        [5,10,1,1], [6,11,7,1],
+        [5,4,1,1], [4,5,1,2], [5,7,1,1], [6,8,2,1],
+        [8,5,1,2], [9,4,1,1], [10,3,1,1], [11,2,1,1], [11,4,1,1], [11,7,1,1],
+        [8,8,1,1]
+      ]);
+      // White (eye, wing)
+      p('#FFFFFF', [
+        [12,2,2,1], [14,3,1,2], [10,4,1,2], [11,3,1,1], [11,5,4,2], [11,7,1,1],
+        [2,5,2,2], [3,4,2,1], [3,7,2,1], [5,5,1,2]
+      ]);
+      // Yellow (body)
+      p('#F7C820', [
+        [6,1,6,1], [4,2,7,1], [3,3,7,1], [2,4,1,1], [5,4,4,1], [1,5,1,2],
+        [6,5,2,2], [2,7,1,1], [6,7,2,1], [3,8,3,1], [5,9,8,1], [6,10,7,1]
+      ]);
+      // Orange (beak)
+      p('#F97017', [
+        [12,7,3,1], [9,8,6,1], [15,7,1,1], [13,9,2,1]
+      ]);
+      // Red (inner beak)
+      p('#E23600', [
+        [9,9,4,1]
+      ]);
+      // Black pupil
+      p('#000000', [
+        [13,4,1,2]
+      ]);
       ctx.restore();
     };
 
