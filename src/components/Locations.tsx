@@ -1,0 +1,101 @@
+import React, { useState } from 'react';
+import { locations } from '../data';
+import { LocationInfo } from '../types';
+import { ArrowLeft, MapPin, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+
+interface LocationsProps {
+  onBack: () => void;
+}
+
+export function Locations({ onBack }: LocationsProps) {
+  const [selectedLoc, setSelectedLoc] = useState<LocationInfo | null>(null);
+
+  return (
+    <div className="flex flex-col h-full bg-[#0a0e1a] text-slate-200">
+      <header className="h-16 border-b border-blue-900/50 bg-[#0d1428] px-4 flex items-center shrink-0">
+        <button onClick={onBack} className="mr-3 w-8 h-8 rounded-full border border-blue-500/30 flex items-center justify-center bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+        <h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Chi nhánh & ATM gần nhất</h2>
+      </header>
+
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col md:flex-row gap-4">
+        {/* List view */}
+        <div className={`flex flex-col gap-3 w-full md:w-1/3 ${selectedLoc ? 'hidden md:flex' : 'flex'}`}>
+          {locations.map((loc, idx) => (
+            <motion.button
+              key={loc.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.05 }}
+              onClick={() => setSelectedLoc(loc)}
+              className={`p-3 rounded-lg transition-all text-left ${
+                selectedLoc?.id === loc.id 
+                ? 'bg-blue-500/20 border border-blue-500/30' 
+                : 'bg-white/5 border border-white/5 hover:bg-white/10'
+              }`}
+            >
+              <h3 className={`text-[10px] font-bold font-display uppercase mb-1 ${selectedLoc?.id === loc.id ? 'text-blue-400' : 'text-slate-200'}`}>
+                {loc.name}
+              </h3>
+              <p className="text-[9px] text-slate-400 line-clamp-2 leading-relaxed flex items-start gap-1">
+                <MapPin className="w-3 h-3 shrink-0 mt-0.5 opacity-70" />
+                {loc.address}
+              </p>
+            </motion.button>
+          ))}
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-2 bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-xs text-slate-300"
+          >
+            <h4 className="font-bold font-display flex items-center gap-2 mb-2 text-blue-400 uppercase tracking-wider text-[10px]">
+              <Clock className="w-4 h-4" /> Thời gian giao dịch
+            </h4>
+            <ul className="space-y-1 ml-6 list-disc text-[10px]">
+              <li>Thứ 2 đến thứ 6:<br/>Sáng: 07:30 - 11:30<br/>Chiều: 13:00 - 16:30</li>
+              <li className="text-slate-500">Thứ 7 - Chủ nhật: Nghỉ giao dịch</li>
+            </ul>
+          </motion.div>
+        </div>
+
+        {/* Map view mobile full screen overlay or desktop split */}
+        <AnimatePresence>
+          {selectedLoc && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full md:w-2/3 bg-[#0d1428] rounded-2xl border border-blue-900/30 overflow-hidden flex flex-col h-full md:h-auto min-h-[400px]"
+            >
+              <div className="p-4 border-b border-blue-900/30 flex justify-between items-center bg-[#0d1428] shrink-0">
+                <div>
+                  <h3 className="font-bold font-display text-white text-xs uppercase tracking-wide">{selectedLoc.name}</h3>
+                  <p className="text-[10px] text-slate-400 mt-1">{selectedLoc.address}</p>
+                </div>
+                <button 
+                  onClick={() => setSelectedLoc(null)}
+                  className="md:hidden p-2 text-blue-400 bg-blue-500/10 rounded-full hover:bg-blue-500/20"
+                >
+                  Đóng
+                </button>
+              </div>
+              <div className="flex-1 w-full relative bg-slate-900">
+                <iframe 
+                  src={selectedLoc.iframeSrc}
+                  className="absolute inset-0 w-full h-full border-0 grayscale opacity-80 mix-blend-lighten"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`Bản đồ ${selectedLoc.name}`}
+                ></iframe>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
