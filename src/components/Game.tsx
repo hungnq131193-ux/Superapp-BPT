@@ -321,8 +321,8 @@ export function Game({ onBack }: GameProps) {
     // Simulate backend call to Google Apps Script
     setTimeout(() => {
       let count = 0;
-      if (score >= 50) count = 2;
-      else if (score >= 30) count = 1;
+      if (score >= 70) count = 2;
+      else if (score >= 50) count = 1;
 
       if (count > 0) {
         // Generate mock codes for preview
@@ -331,7 +331,7 @@ export function Game({ onBack }: GameProps) {
         );
         
         setVoucherCodes(codes);
-        setRewardMessage(`Xuất sắc! Quý khách nhận được ${count} voucher 2 lít xăng.`);
+        setRewardMessage(`Xuất sắc! Quý khách nhận được voucher ${count === 2 ? '2 lít' : '1 lít'} xăng.`);
         setGameState('SUCCESS');
       } else {
         setErrorMsg('Điểm chưa đủ điều kiện nhận voucher.');
@@ -374,11 +374,11 @@ export function Game({ onBack }: GameProps) {
                   <h3 className="text-2xl font-black font-display text-[#ed1c24] mb-2 uppercase tracking-wide">Trò Chơi Kết Thúc</h3>
                   <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">Bạn đạt <span className="text-white text-xl">{score}</span> điểm</p>
                   
-                  {score >= 30 ? (
+                  {score >= 50 ? (
                     <div className="mb-6 p-4 bg-gradient-to-br from-green-900/40 to-green-800/20 rounded-xl border border-green-500/30">
                       <Gift className="w-8 h-8 mx-auto mb-2 text-green-400" />
                       <p className="font-bold text-white uppercase tracking-wide">Chúc mừng!</p>
-                      <p className="text-xs text-green-300 mt-1">Bạn đủ điều kiện nhận {score >= 50 ? '2' : '1'} voucher 2 lít xăng</p>
+                      <p className="text-xs text-green-300 mt-1">Bạn đủ điều kiện nhận voucher {score >= 70 ? '2 lít' : '1 lít'} xăng</p>
                       <button 
                         onClick={() => setGameState('CLAIM')}
                         className="mt-4 w-full bg-green-600 hover:bg-green-500 text-white py-2.5 rounded-lg font-bold text-xs uppercase transition"
@@ -389,7 +389,7 @@ export function Game({ onBack }: GameProps) {
                   ) : (
                     <div className="mb-6 text-slate-400">
                       <p className="text-sm">Cố thêm chút nữa để nhận voucher nhé!</p>
-                      <p className="text-[10px] mt-1 uppercase">(30 điểm = 1 voucher, 50 điểm = 2 voucher)</p>
+                      <p className="text-[10px] mt-1 uppercase">(50 điểm = 1 lít, 70 điểm = 2 lít)</p>
                     </div>
                   )}
 
@@ -419,7 +419,7 @@ export function Game({ onBack }: GameProps) {
                 <div className="p-6 flex-1 overflow-y-auto">
                   <div className="bg-gradient-to-br from-[#005baa]/20 to-[#ed1c24]/20 border border-blue-500/20 p-4 rounded-xl mb-6 text-center">
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Thành tích: <span className="text-white text-base">{score}</span> điểm</p>
-                    <p className="text-sm font-bold text-white uppercase">Phần thưởng: <span className="text-blue-400">{score >= 50 ? '2' : '1'} Voucher xăng 2L</span></p>
+                    <p className="text-sm font-bold text-white uppercase">Phần thưởng: <span className="text-blue-400">Voucher xăng {score >= 70 ? '2L' : '1L'}</span></p>
                   </div>
                   
                   <div className="space-y-4">

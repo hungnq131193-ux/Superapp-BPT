@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, TrendingDown, WalletCards } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface LoanCalculatorProps {
@@ -78,16 +78,18 @@ export function LoanCalculator({ onBack }: LoanCalculatorProps) {
         <button onClick={onBack} className="mr-3 w-8 h-8 rounded-full border border-blue-500/30 flex items-center justify-center bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Lịch Trả Nợ Dự Kiến</h2>
+        <div><h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Lịch trả nợ dự kiến</h2><p className="text-[10px] text-blue-200/70">Dư nợ giảm dần, tách rõ gốc và lãi</p></div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-[#0d1428] rounded-2xl border border-blue-900/30 p-5 shrink-0"
+          className="relative overflow-hidden bg-gradient-to-br from-[#0f2e5e] via-[#0d1428] to-[#071225] rounded-3xl border border-blue-400/20 p-5 shrink-0 shadow-2xl"
         >
-          <div className="space-y-4">
+          <div className="absolute -right-14 -top-14 h-36 w-36 rounded-full bg-blue-400/20 blur-3xl" />
+          <div className="relative mb-4 flex items-center gap-3"><div className="rounded-2xl bg-white/10 p-3 text-blue-200"><TrendingDown className="h-5 w-5" /></div><div><p className="font-display text-sm font-black uppercase text-white">Công cụ khoản vay</p><p className="text-xs text-slate-300">Ước tính nghĩa vụ trả nợ từng tháng.</p></div></div>
+          <div className="relative space-y-4">
             <div>
               <label className="block text-[10px] uppercase text-slate-500 font-bold mb-2">Số tiền vay (VND)</label>
               <input 
@@ -147,12 +149,12 @@ export function LoanCalculator({ onBack }: LoanCalculatorProps) {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 shrink-0 flex flex-col gap-2"
+            className="bg-gradient-to-br from-blue-500/15 to-emerald-500/10 border border-blue-400/20 rounded-3xl p-4 shrink-0 flex flex-col gap-2 shadow-xl"
           >
-            <div className="flex justify-between text-xs">
+            <div className="flex items-center gap-2 text-xs"><WalletCards className="h-4 w-4 text-blue-300" /><div className="flex flex-1 justify-between">
               <span className="text-slate-400 font-bold uppercase">Tổng lãi phải trả:</span>
               <span className="font-mono text-white">{formatCurrency(summary.totalInterest)} VND</span>
-            </div>
+            </div></div>
             <div className="flex justify-between text-xs mt-2 border-t border-white/5 pt-2">
               <span className="text-slate-400 font-bold uppercase">Tổng gốc + lãi:</span>
               <span className="font-mono text-lg text-blue-400 font-bold">{formatCurrency(summary.totalPayment)} VND</span>

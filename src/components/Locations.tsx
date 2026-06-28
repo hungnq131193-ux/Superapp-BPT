@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { locations } from '../data';
 import { LocationInfo } from '../types';
-import { ArrowLeft, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, Search, Navigation } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface LocationsProps {
@@ -10,6 +10,8 @@ interface LocationsProps {
 
 export function Locations({ onBack }: LocationsProps) {
   const [selectedLoc, setSelectedLoc] = useState<LocationInfo | null>(null);
+  const [query, setQuery] = useState('');
+  const filteredLocations = locations.filter((loc) => `${loc.name} ${loc.address}`.toLowerCase().includes(query.toLowerCase()));
 
   return (
     <div className="flex flex-col h-full bg-[#0a0e1a] text-slate-200">
@@ -17,13 +19,23 @@ export function Locations({ onBack }: LocationsProps) {
         <button onClick={onBack} className="mr-3 w-8 h-8 rounded-full border border-blue-500/30 flex items-center justify-center bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Chi nhánh & ATM gần nhất</h2>
+        <div><h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Mạng lưới chi nhánh</h2><p className="text-[10px] text-blue-200/70">Tra cứu nhanh địa chỉ và bản đồ PGD</p></div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 flex flex-col md:flex-row gap-4">
         {/* List view */}
         <div className={`flex flex-col gap-3 w-full md:w-1/3 ${selectedLoc ? 'hidden md:flex' : 'flex'}`}>
-          {locations.map((loc, idx) => (
+          <div className="rounded-3xl border border-blue-400/20 bg-gradient-to-br from-[#0f2e5e] to-[#0d1428] p-4 shadow-xl">
+            <div className="flex items-center gap-2 text-blue-100">
+              <Navigation className="h-4 w-4" />
+              <p className="text-[10px] font-black uppercase tracking-wider">{locations.length} điểm giao dịch</p>
+            </div>
+            <label className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+              <Search className="h-4 w-4 text-slate-400" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Tìm theo tên hoặc địa chỉ..." className="w-full bg-transparent text-xs text-white outline-none placeholder:text-slate-500" />
+            </label>
+          </div>
+          {filteredLocations.map((loc, idx) => (
             <motion.button
               key={loc.id}
               initial={{ opacity: 0, x: -10 }}
@@ -31,8 +43,8 @@ export function Locations({ onBack }: LocationsProps) {
               transition={{ delay: idx * 0.05 }}
               onClick={() => setSelectedLoc(loc)}
               className={`relative p-4 rounded-xl transition-all text-left overflow-hidden ${
-                selectedLoc?.id === loc.id 
-                ? 'bg-gradient-to-br from-[#005baa]/20 to-transparent border border-blue-500/50 shadow-[0_0_15px_rgba(0,91,170,0.2)]' 
+                selectedLoc?.id === loc.id
+                ? 'bg-gradient-to-br from-[#005baa]/30 to-white/5 border border-blue-400/60 shadow-[0_0_20px_rgba(0,91,170,0.22)]'
                 : 'bg-white/5 border border-white/10 hover:bg-white/10'
               }`}
             >
@@ -48,8 +60,8 @@ export function Locations({ onBack }: LocationsProps) {
               </p>
             </motion.button>
           ))}
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="mt-2 bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 text-xs text-slate-300"
@@ -67,7 +79,7 @@ export function Locations({ onBack }: LocationsProps) {
         {/* Map view mobile full screen overlay or desktop split */}
         <AnimatePresence>
           {selectedLoc && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -78,7 +90,7 @@ export function Locations({ onBack }: LocationsProps) {
                   <h3 className="font-bold font-display text-white text-xs uppercase tracking-wide">{selectedLoc.name}</h3>
                   <p className="text-[10px] text-slate-400 mt-1">{selectedLoc.address}</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setSelectedLoc(null)}
                   className="md:hidden p-2 text-blue-400 bg-blue-500/10 rounded-full hover:bg-blue-500/20"
                 >
@@ -86,7 +98,7 @@ export function Locations({ onBack }: LocationsProps) {
                 </button>
               </div>
               <div className="flex-1 w-full relative bg-slate-900">
-                <iframe 
+                <iframe
                   src={selectedLoc.iframeSrc}
                   className="absolute inset-0 w-full h-full border-0 shadow-inner"
                   allowFullScreen
