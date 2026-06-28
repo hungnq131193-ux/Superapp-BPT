@@ -9,7 +9,7 @@ import { FAQ } from './components/FAQ';
 import { DepositCalculator } from './components/DepositCalculator';
 import { LoanCalculator } from './components/LoanCalculator';
 import { Locations } from './components/Locations';
-import { Game } from './components/Game';
+import { MiniGames } from './components/MiniGames';
 import { motion, AnimatePresence } from 'motion/react';
 import { HelpCircle, Calculator, CalendarDays, Map, Gamepad2 } from 'lucide-react';
 
@@ -78,7 +78,7 @@ export default function App() {
                     <div className="relative z-10 h-full flex flex-col justify-center">
                       <p className="text-[10px] font-bold text-white/70 uppercase flex items-center gap-2"><Gamepad2 className="w-4 h-4" /> Mini Game</p>
                       <h3 className="text-lg font-black font-display text-white leading-tight mt-1">GIẢI TRÍ<br/>& NHẬN QUÀ</h3>
-                      <p className="text-[10px] text-white/80 mt-2">Chơi Flappy Bird nhận voucher xăng!</p>
+                      <p className="text-[10px] text-white/80 mt-2">Chơi Flappy Bird hoặc Snake cổ điển!</p>
                     </div>
                     <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
                   </button>
@@ -87,11 +87,11 @@ export default function App() {
             </motion.div>
           )}
 
-          {currentView === 'FAQ' && <FAQ key="faq" onBack={backToMenu} />}
-          {currentView === 'DEPOSIT' && <DepositCalculator key="dep" onBack={backToMenu} />}
-          {currentView === 'LOAN' && <LoanCalculator key="loan" onBack={backToMenu} />}
-          {currentView === 'LOCATIONS' && <Locations key="loc" onBack={backToMenu} />}
-          {currentView === 'GAME' && <Game key="game" onBack={backToMenu} />}
+          {currentView === 'FAQ' && <FAQ onBack={backToMenu} />}
+          {currentView === 'DEPOSIT' && <DepositCalculator onBack={backToMenu} />}
+          {currentView === 'LOAN' && <LoanCalculator onBack={backToMenu} />}
+          {currentView === 'LOCATIONS' && <Locations onBack={backToMenu} />}
+          {currentView === 'GAME' && <MiniGames onBack={backToMenu} />}
         </AnimatePresence>
       </div>
     </div>

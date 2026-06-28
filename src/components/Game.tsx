@@ -39,10 +39,6 @@ export function Game({ onBack }: GameProps) {
   const frameRef = useRef(0);
   const scoreRef = useRef(0);
 
-  // Scenery refs
-  const starsRef = useRef<{x: number, y: number, color: string, size: number}[]>([]);
-  const buildingsRef = useRef<{w: number, h: number, gap: number}[]>([]);
-  const ghostsRef = useRef<{x: number, y: number, speed: number, offset: number}[]>([]);
 
   // Initialize game
   const resetGame = () => {
@@ -71,33 +67,6 @@ export function Game({ onBack }: GameProps) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    if (starsRef.current.length === 0) {
-      for(let i=0; i<30; i++) {
-        starsRef.current.push({
-            x: Math.random() * 360,
-            y: Math.random() * 350,
-            color: Math.random() > 0.5 ? '#ffffff' : '#fced60',
-            size: Math.random() > 0.5 ? 2 : 3
-        });
-      }
-      let w = 0;
-      while(w < 360) {
-        let bw = 30 + Math.random() * 40;
-        let h = 30 + Math.random() * 80;
-        let gap = Math.random() * 10;
-        buildingsRef.current.push({w: bw, h, gap});
-        w += bw + gap;
-      }
-      for(let i=0; i<3; i++) {
-        ghostsRef.current.push({
-            x: 100 + Math.random() * 200,
-            y: 50 + Math.random() * 200,
-            speed: 0.5 + Math.random() * 0.5,
-            offset: Math.random() * Math.PI * 2
-        });
-      }
-    }
 
     const drawBird = (x: number, y: number, radius: number, velocity: number) => {
       ctx.save();
@@ -188,84 +157,45 @@ export function Game({ onBack }: GameProps) {
     const loop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Sky background
-      ctx.fillStyle = '#313b63';
+      // Classic Flappy Bird-style bright daytime sky
+      const sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      sky.addColorStop(0, '#70c5ce');
+      sky.addColorStop(0.72, '#70c5ce');
+      sky.addColorStop(1, '#b8e8d6');
+      ctx.fillStyle = sky;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      // Stars
-      starsRef.current.forEach(star => {
-        ctx.fillStyle = star.color;
-        if (star.size > 2) {
-          ctx.fillRect(star.x - 1, star.y, 3, 1);
-          ctx.fillRect(star.x, star.y - 1, 1, 3);
-        } else {
-          ctx.fillRect(star.x, star.y, star.size, star.size);
-        }
-      });
-
-      // Clouds
+      // Puffy clouds inspired by the original game's simple parallax backdrop
       drawRepeating(() => {
-        ctx.fillStyle = '#495a82';
-        ctx.beginPath();
-        for(let x=0; x<canvas.width; x+=40) ctx.arc(x, canvas.height - 130, 30, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = '#5d739e';
-        ctx.beginPath();
-        for(let x=20; x<canvas.width; x+=40) ctx.arc(x, canvas.height - 110, 35, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillRect(0, canvas.height - 110, canvas.width, 110);
-      }, 0.2);
-
-      // City
-      drawRepeating(() => {
-        ctx.fillStyle = '#657a9e';
-        let cx = 0;
-        buildingsRef.current.forEach(b => {
-          ctx.fillRect(cx, canvas.height - 90 - b.h, b.w, b.h);
-          cx += b.w + b.gap;
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        [[48,92,22],[158,66,18],[286,116,24]].forEach(([x,y,r]) => {
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.arc(x + r, y + 4, r * 0.75, 0, Math.PI * 2);
+          ctx.arc(x - r, y + 6, r * 0.7, 0, Math.PI * 2);
+          ctx.fill();
         });
-      }, 0.5);
+      }, 0.25);
 
-      // Bushes
+      // Low green hills and bushes like the classic mobile game scene
       drawRepeating(() => {
-        ctx.fillStyle = '#29822a';
+        ctx.fillStyle = '#7ac943';
         ctx.beginPath();
-        for(let x=0; x<=canvas.width; x+=30) ctx.arc(x, canvas.height - 70, 20, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillRect(0, canvas.height - 70, canvas.width, 70);
-      }, 1);
-
-      // Ghosts
-      ghostsRef.current.forEach(g => {
-        if(gameState === 'PLAYING') g.x -= g.speed;
-        if(g.x < -30) g.x = canvas.width + 30;
-        const gy = g.y + Math.sin(frameRef.current * 0.05 + g.offset) * 10;
-        
-        ctx.save();
-        ctx.translate(g.x, gy);
-        ctx.fillStyle = '#fff';
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, -5, 10, Math.PI, 0);
-        ctx.lineTo(10, 5);
-        ctx.lineTo(5, 10);
-        ctx.lineTo(0, 5);
-        ctx.lineTo(-5, 10);
-        ctx.lineTo(-10, 5);
+        ctx.arc(30, canvas.height - 82, 42, Math.PI, 0);
+        ctx.arc(118, canvas.height - 78, 58, Math.PI, 0);
+        ctx.arc(230, canvas.height - 84, 46, Math.PI, 0);
+        ctx.arc(326, canvas.height - 80, 56, Math.PI, 0);
+        ctx.lineTo(canvas.width, canvas.height - 50);
+        ctx.lineTo(0, canvas.height - 50);
         ctx.closePath();
         ctx.fill();
-        ctx.stroke();
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(2, -3, 3, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(3, -4, 1, 0, Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      });
+        ctx.fillStyle = '#5fbf35';
+        for (let x = 0; x <= canvas.width; x += 32) {
+          ctx.beginPath();
+          ctx.arc(x, canvas.height - 54, 18, Math.PI, 0);
+          ctx.fill();
+        }
+      }, 0.55);
 
       if (gameState === 'START') {
         drawBird(birdRef.current.x, birdRef.current.y, birdRef.current.radius, 0);
@@ -333,8 +263,10 @@ export function Game({ onBack }: GameProps) {
 
       // Ground
       const groundOffset = (frameRef.current * PIPE_SPEED) % 40;
-      ctx.fillStyle = '#dfaf76';
+      ctx.fillStyle = '#ded895';
       ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+      ctx.fillStyle = '#d2b36f';
+      for (let x = -groundOffset; x < canvas.width + 40; x += 20) ctx.fillRect(x, canvas.height - 31, 10, 6);
       ctx.fillStyle = '#8bd13e';
       ctx.fillRect(0, canvas.height - 50, canvas.width, 12);
       
@@ -414,7 +346,7 @@ export function Game({ onBack }: GameProps) {
         <button onClick={onBack} className="mr-3 w-8 h-8 rounded-full border border-blue-500/30 flex items-center justify-center bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
           <ArrowLeft className="w-4 h-4" />
         </button>
-        <h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Vòng Quay May Mắn</h2>
+        <h2 className="text-sm font-bold font-display text-white uppercase tracking-wider">Flappy Bird</h2>
       </header>
 
       <div className="flex-1 relative overflow-hidden flex flex-col">
