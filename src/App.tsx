@@ -11,7 +11,7 @@ import { LoanCalculator } from './components/LoanCalculator';
 import { Locations } from './components/Locations';
 import { MiniGames } from './components/MiniGames';
 import { motion, AnimatePresence } from 'motion/react';
-import { HelpCircle, Calculator, CalendarDays, Map, Gamepad2 } from 'lucide-react';
+import { HelpCircle, Calculator, CalendarDays, Map, Gamepad2, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('MENU');
@@ -19,8 +19,8 @@ export default function App() {
   const backToMenu = () => setCurrentView('MENU');
 
   return (
-    <div className="w-full min-h-screen bg-[#0a0e1a] flex justify-center items-center font-sans text-slate-200">
-      <div className="w-full max-w-[420px] h-[100dvh] bg-[#0a0e1a] shadow-2xl relative overflow-hidden flex flex-col border-x border-blue-900/50">
+    <div className="w-full min-h-screen bg-[radial-gradient(circle_at_top,#123a70_0%,#071225_42%,#030712_100%)] flex justify-center items-center font-sans text-slate-200">
+      <div className="w-full max-w-[430px] h-[100dvh] bg-[#071225] shadow-[0_30px_80px_rgba(0,0,0,0.45)] relative overflow-hidden flex flex-col border-x border-white/10">
         <AnimatePresence mode="wait">
           {currentView === 'MENU' && (
             <motion.div 
@@ -30,20 +30,31 @@ export default function App() {
               exit={{ opacity: 0, x: -20 }}
               className="flex-1 flex flex-col"
             >
-              <header className="pt-12 pb-6 px-6 border-b border-blue-900/50 bg-[#0d1428] rounded-b-2xl shadow-md">
-                <div className="flex items-center gap-4 mb-6">
+              <header className="relative overflow-hidden pt-12 pb-7 px-6 border-b border-white/10 bg-gradient-to-br from-[#0f2e5e] via-[#0d1b35] to-[#071225] rounded-b-[2rem] shadow-2xl">
+                <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-blue-400/20 blur-3xl" />
+                <div className="relative flex items-center gap-4 mb-6">
                   <img 
                     src="https://raw.githubusercontent.com/giadinhbanker/anh-super-app-bac-phu-tho/main/Logo%20VietinBank.png" 
                     alt="VietinBank" 
-                    className="h-10 object-contain"
+                    className="h-11 object-contain rounded-xl bg-white p-1.5 shadow-lg"
                   />
-                  <span className="text-sm text-blue-400 font-bold uppercase tracking-wider leading-tight border-l border-blue-500/30 pl-4 py-1">Chi nhánh<br/>Bắc Phú Thọ</span>
+                  <span className="text-sm text-blue-100 font-bold uppercase tracking-wider leading-tight border-l border-blue-300/30 pl-4 py-1">Chi nhánh<br/>Bắc Phú Thọ</span>
                 </div>
-                <h1 className="text-xl font-bold font-display tracking-tight text-white uppercase mt-4">Xin chào Quý khách!</h1>
-                <p className="text-[10px] text-blue-400 font-medium uppercase tracking-[0.2em] mt-1">Vui lòng chọn dịch vụ bạn cần hỗ trợ hôm nay.</p>
+                <h1 className="relative text-2xl font-black font-display tracking-tight text-white uppercase mt-4">Xin chào Quý khách!</h1>
+                <p className="relative text-[10px] text-blue-100/80 font-bold uppercase tracking-[0.2em] mt-2">Vui lòng chọn dịch vụ bạn cần hỗ trợ hôm nay.</p>
               </header>
 
-              <div className="flex-1 overflow-y-auto px-5 pt-8 pb-10 space-y-4">
+              <div className="px-5 -mt-5 relative z-10">
+                <div className="rounded-3xl border border-white/10 bg-white/[0.08] p-4 backdrop-blur-xl shadow-xl flex items-center gap-3">
+                  <div className="rounded-2xl bg-emerald-400/15 p-3 text-emerald-300"><ShieldCheck className="w-5 h-5" /></div>
+                  <div>
+                    <p className="text-xs font-black uppercase text-white">Trợ lý số VietinBank</p>
+                    <p className="text-[10px] text-slate-300">Dịch vụ, lãi vay, lãi gửi và điểm giao dịch trong một ứng dụng.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-5 pt-5 pb-10 space-y-4">
                 <MenuCard 
                   icon={<HelpCircle className="w-6 h-6 text-[#005aa9]" />}
                   title="Hướng dẫn dịch vụ"
@@ -102,13 +113,13 @@ function MenuCard({ icon, title, desc, onClick }: { icon: React.ReactNode, title
   return (
     <button 
       onClick={onClick}
-      className="w-full bg-[#0d1428] border border-blue-900/30 rounded-2xl p-4 flex items-center gap-4 hover:bg-blue-500/10 transition-all text-left"
+      className="group w-full bg-white/[0.06] border border-white/10 rounded-3xl p-4 flex items-center gap-4 hover:bg-blue-500/10 hover:border-blue-300/30 transition-all text-left shadow-lg"
     >
-      <div className="w-10 h-10 rounded-full border border-blue-500/30 flex items-center justify-center bg-blue-500/10 shrink-0">
+      <div className="w-11 h-11 rounded-2xl border border-blue-400/30 flex items-center justify-center bg-blue-500/10 shrink-0 group-hover:scale-105 transition">
         {icon}
       </div>
       <div>
-        <h3 className="text-xs font-bold font-display text-white uppercase tracking-wide">{title}</h3>
+        <h3 className="text-xs font-black font-display text-white uppercase tracking-wide">{title}</h3>
         <p className="text-[10px] text-slate-400 mt-1">{desc}</p>
       </div>
     </button>

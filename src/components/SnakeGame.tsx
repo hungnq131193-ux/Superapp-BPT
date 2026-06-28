@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Gift, RotateCcw } from 'lucide-react';
 
 interface SnakeGameProps {
   onBack: () => void;
 }
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-type SnakeState = 'READY' | 'PLAYING' | 'GAME_OVER';
+type SnakeState = 'READY' | 'PLAYING' | 'GAME_OVER' | 'SUCCESS';
 type Cell = { x: number; y: number };
 
 const GRID = 20;
@@ -126,9 +126,9 @@ export function SnakeGame({ onBack }: SnakeGameProps) {
         ctx.fillStyle = '#f4f4c9';
         ctx.textAlign = 'center';
         ctx.font = 'bold 24px monospace';
-        ctx.fillText(gameState === 'GAME_OVER' ? 'GAME OVER' : 'SNAKE', CANVAS / 2, 170);
+        ctx.fillText(gameState === 'SUCCESS' ? 'VOUCHER!' : gameState === 'GAME_OVER' ? 'GAME OVER' : 'SNAKE', CANVAS / 2, 170);
         ctx.font = 'bold 13px monospace';
-        ctx.fillText('Vuốt hoặc bấm phím để chơi', CANVAS / 2, 196);
+        ctx.fillText(gameState === 'SUCCESS' ? 'Đạt 200 điểm nhận voucher' : 'Vuốt hoặc bấm phím để chơi', CANVAS / 2, 196);
       }
     };
 
@@ -146,7 +146,7 @@ export function SnakeGame({ onBack }: SnakeGameProps) {
       const hitWall = nextHead.x < 0 || nextHead.x >= GRID || nextHead.y < 0 || nextHead.y >= GRID;
       const hitSelf = snakeRef.current.some(part => part.x === nextHead.x && part.y === nextHead.y);
       if (hitWall || hitSelf) {
-        setGameState('GAME_OVER');
+        setGameState(score >= 200 ? 'SUCCESS' : 'GAME_OVER');
         setHighScore(prev => Math.max(prev, score));
         draw();
         return;
@@ -199,6 +199,19 @@ export function SnakeGame({ onBack }: SnakeGameProps) {
         >
           <canvas ref={canvasRef} width={CANVAS} height={CANVAS} className="w-full max-w-[360px] aspect-square image-render-pixelated" />
         </div>
+
+        {gameState === 'SUCCESS' && (
+          <div className="w-full max-w-[360px] rounded-2xl border border-amber-300/40 bg-amber-300/15 p-4 text-center text-amber-50 shadow-xl">
+            <Gift className="mx-auto mb-2 h-8 w-8 text-amber-300" />
+            <p className="font-display text-sm font-black uppercase">Chúc mừng! Bạn đạt {score} điểm</p>
+            <p className="mt-1 text-xs text-amber-100/80">Vui lòng chụp màn hình để nhận voucher tại VietinBank Bắc Phú Thọ.</p>
+          </div>
+        )}
+        {gameState === 'GAME_OVER' && score < 200 && (
+          <div className="w-full max-w-[360px] rounded-2xl border border-white/10 bg-white/5 p-3 text-center text-xs text-slate-300">
+            Cần đạt 200 điểm để nhận voucher. Hãy thử lại nhé!
+          </div>
+        )}
         <div className="grid grid-cols-3 gap-2 text-[#0f380f]">
           <span />
           <button onClick={() => changeDirection('UP')} className="bg-[#9bbc0f] rounded-lg p-3 font-black">▲</button>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Bird, Gamepad2, Smartphone } from 'lucide-react';
+import { ArrowLeft, Bird, Gift, Smartphone } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Game } from './Game';
 import { SnakeGame } from './SnakeGame';
@@ -30,20 +30,20 @@ export function MiniGames({ onBack }: MiniGamesProps) {
         <GameChoice
           icon={<Bird className="w-8 h-8 text-yellow-300" />}
           title="Flappy Bird"
-          desc="Bay qua ống xanh, đồ họa pixel bầu trời xanh giống bản gốc. Đạt mốc điểm để nhận voucher."
+          desc="Bay qua ống xanh, đạt 50 điểm nhận voucher 1 lít xăng; đạt 70 điểm nhận voucher 2 lít xăng."
           gradient="from-sky-400 via-cyan-300 to-emerald-300"
           onClick={() => setSelectedGame('FLAPPY')}
         />
         <GameChoice
           icon={<Smartphone className="w-8 h-8 text-[#9bbc0f]" />}
           title="Rắn săn mồi"
-          desc="Snake cổ điển phong cách màn hình Game Boy: nền xanh ô vuông, mồi pixel và điều khiển bằng vuốt/phím."
+          desc="Snake cổ điển tối ưu cho điện thoại; đạt 200 điểm cũng sẽ nhận voucher."
           gradient="from-[#0f380f] via-[#306230] to-[#9bbc0f]"
           onClick={() => setSelectedGame('SNAKE')}
         />
-        <div className="rounded-2xl border border-blue-900/40 bg-[#0d1428] p-4 flex gap-3 text-xs text-slate-400 leading-relaxed">
-          <Gamepad2 className="w-5 h-5 text-blue-400 shrink-0" />
-          <p>Flappy Bird giữ cơ chế nhận voucher. Snake là chế độ giải trí bổ sung để khách hàng chơi nhanh trên điện thoại.</p>
+        <div className="rounded-2xl border border-amber-300/30 bg-amber-300/10 p-4 flex gap-3 text-xs text-amber-50 leading-relaxed">
+          <Gift className="w-5 h-5 text-amber-300 shrink-0" />
+          <p>Mốc thưởng: Flappy Bird 50 điểm nhận voucher 1 lít xăng, 70 điểm nhận voucher 2 lít xăng. Snake đạt 200 điểm nhận voucher.</p>
         </div>
       </div>
     </div>
